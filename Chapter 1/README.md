@@ -29,3 +29,9 @@ When we do not learn from exploratory moves, the value associated to each state 
 Conversely, when we do learn from exploratory moves, the value associated to each state will not correspond to the estimate of selecting the greediest policy from that state onwards. Exploratory moves will either increase or decrease the state associated with the current state. If this value is decreased, the estimate for the current state will be updated and underestimated, possibly changing the current policy (which could be the optimal) for a different one. On the other hand, if the value of the current state is increased, it will become a closer estimate to its real value. Nevertheless, an approximation to the real state value estimates is already being done when non learning from exploratory moves (in the limit). This means that by updating the values (learning) when doing exploring, we're possibly underestimating the state values and this might imply obtaining a non-optimal policy.
 
 Comparing both techniques, non-learning from exploratory moves will learn a better policy (set of probabilities), resulting in more wins, when compared to the policy and number of wins obtained by learning from exploratory moves.
+
+### Exercise 1.5: *Other Improvements*
+
+**Can you think fo other ways to improve the reinforcement learning player? Can you think of any better way to solve the tic-tac-toe problem as posed?**
+
+*Not solved yet.*
