@@ -34,4 +34,4 @@ Comparing both techniques, non-learning from exploratory moves will learn a bett
 
 **Can you think fo other ways to improve the reinforcement learning player? Can you think of any better way to solve the tic-tac-toe problem as posed?**
 
-*Not solved yet.*
+A better way for improving the state values would be to do so once the game (episode) is over. With this approach, each state above the leaf node in the decision tree generated will be updated with the new information on the game termination, rather than with the expected value calculated over the previous episodes. This would speed up the time until convergence.
