@@ -16,3 +16,12 @@ The sequence of steps associated to the certainty of ε having occurred is shown
 3. Maybe: Q(*a<sub>k<sub>*) = 1 for k ∈ {1, 2} at this point, so choosing A<sub>3</sub> = 2 could have happened due to ε, or by randomly choosing an action when tie-breaking.
 4. Maybe: Q(*a<sub>2<sub>*) = 3 at this point, so choosing A<sub>4</sub> = 2 could have happened due to ε, or by selecting the option action with highest Q at this point, which is a<sub>2</sub>.
 5. Yes: Q(*a<sub>2<sub>*) = 5 at this point, so choosing A<sub>5</sub> = 3 A<sub>2</sub> = 2 is necessarily a random decision, otherwise A<sub>2</sub> would have been chosen.
+
+### Exercise 2.3:
+**In the comparison shown in Figure 2.2, which method will perform best in the long run in terms of cumupative reward and probability of selecting the best acton? How much better will it be? Express your answer quantitatively.**
+
+The method that will perform best in the long run is ε-greedy with ε = 0.01. Though it seems like the ε-greedy method with ε = 0.1 works better for 1000 steps, in the long run ε = 0.01 should outperform it. This is true because in the limit when steps tend to infinity, both methods will have the expected rewards converge to the true reward value. Since ε = 0.01 has a lower degree of randomness, it will capture a higher amount of reward. In either case any method will have an infinite reward, though the area under the curve will be bigger for ε = 0.01 if we were to select a given step much bigger than 1000 and evaluate the curve until that timestamp.
+
+Quantitatively, we can estimate the reward obtained in each step by calculating the expected reward knowing q*(a) (the real value for each action). The expected reward value of a random guess is approximately 0, which means that a random guess' expected reward is 0. For ε = 0.1, there's a 90% chance of having a 1.5 reward value, and a .1% of having a random guess, which means a 0 reward. This results in an expected reward of 1.5 * .9 = 1.35.
+
+We can estimate the reward for ε = 0.01 in a similar way. For ε = 0.01, there's a 99% chance of having a 1.5 reward value, and a .01% of having a random guess with 0 reward. This results in an expected reward of 1.5 * .99 = 1.485. Thus, ε-greedy with ε = 0.01 results in an expected reward value which is 0.135 units higher than ε-greedy with ε = 0.1.
