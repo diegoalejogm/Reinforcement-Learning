@@ -25,3 +25,27 @@ The method that will perform best in the long run is ε-greedy with ε = 0.01. T
 Quantitatively, we can estimate the reward obtained in each step by calculating the expected reward knowing q*(a) (the real value for each action). The expected reward value of a random guess is approximately 0, which means that a random guess' expected reward is 0. For ε = 0.1, there's a 90% chance of having a 1.5 reward value, and a .1% of having a random guess, which means a 0 reward. This results in an expected reward of 1.5 * .9 = 1.35.
 
 We can estimate the reward for ε = 0.01 in a similar way. For ε = 0.01, there's a 99% chance of having a 1.5 reward value, and a .01% of having a random guess with 0 reward. This results in an expected reward of 1.5 * .99 = 1.485. Thus, ε-greedy with ε = 0.01 results in an expected reward value which is 0.135 units higher than ε-greedy with ε = 0.1.
+
+### Exercise 2.4:
+**If the step-size parameters, 𝛼<sub>n</sub>, are not constant, then the estimate Q<sub>n</sub> is a weighted average of previously received rewards with a weighting different from that given by (2.6). What is the weighting on each prior reward for the general case, analogous to (2.6), in terms of the sequence of step-size parameters?**
+
+[Link to Solution PDF](./2.4.pdf)
+
+[![alt text](./2.4.pdf  "Soliution to Problem 2.4")] (./2.4.pdf)
+
+### Exercise 2.6: *Mysterious Spikes*
+**The results shown in Figure 2.3 should be quite reliable because they are averages over 2000 individual, randomly chosen 10-armed bandits tasks. Why, then, are there oscillations and spikes in the early part of the curve for the optimistic method? In other words, what might make this method perform particularly better or worse, on average, on particular early steps?**
+
+The oscillations in the early part of the optimistic method's curve seem to occur when the estimated values are still optimistic. When the curve increases, it is due to choosing the best bandit (the bandit with the highest expected reward); nevertheless, estimated values are still optimistic (much higher than their expected values). In this context, the best bandit is selected due to its optimistic value at some point during the early part of the curve, but when its estimated value becomes much closer to the real expected value, other decisions with optimistic values are chosen. This makes the curve oscillate during the early stages, until all estimated values aren't as nearly as optimal and becom much closer to the real expected value instead.
+
+This means that for a short number of steps it isn't better to use an optimistic greedy methodology rather than a realistic e-greedy. Additionally, this trick is useful to encourage exploration only during the beginning of execution, and would just be useful for stationary problems.
+
+
+### Exercise 2.7:
+**Show that in the case of two actions, the soft-max distribution is the same as that given by the logistic, or sigmoid, function often used in statistics and artificial neural networks.**
+
+
+[Link to Solution PDF](./2.7.pdf)
+
+[![alt text](./2.7.pdf  "Soliution to Problem 2.4")] (./2.7.pdf)
+
