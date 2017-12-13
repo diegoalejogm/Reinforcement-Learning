@@ -31,7 +31,7 @@ We can estimate the reward for ε = 0.01 in a similar way. For ε = 0.01, there'
 
 [Link to Solution PDF](./2.4.pdf)
 
-[![alt text](./2.4.pdf  "Soliution to Problem 2.4")] (./2.4.pdf)
+<!-- [![alt text](./2.4.pdf  "Soliution to Problem 2.4")] (./2.4.pdf) -->
 
 ### Exercise 2.6: *Mysterious Spikes*
 **The results shown in Figure 2.3 should be quite reliable because they are averages over 2000 individual, randomly chosen 10-armed bandits tasks. Why, then, are there oscillations and spikes in the early part of the curve for the optimistic method? In other words, what might make this method perform particularly better or worse, on average, on particular early steps?**
@@ -47,5 +47,5 @@ This means that for a short number of steps it isn't better to use an optimistic
 
 [Link to Solution PDF](./2.7.pdf)
 
-[![alt text](./2.7.pdf  "Soliution to Problem 2.4")] (./2.7.pdf)
+<!-- [![alt text](./2.7.pdf  "Soliution to Problem 2.4")] (./2.7.pdf) -->
 
