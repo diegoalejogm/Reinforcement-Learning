@@ -7,10 +7,24 @@ def random_policy(env):
     return np.ones(S + (A,)) / A
 
 
+def deterministic_policy(env):
+    S = tuple([space.n for space in env.observation_space.spaces])
+    A = env.action_space.n
+    policy = np.zeros(S + (A,)) / A
+    policy[..., 0] = 1
+    return policy
+
+
 def zero_action_value(env):
     S = tuple([space.n for space in env.observation_space.spaces])
     A = env.action_space.n
-    return np.ones(S + (A,)) / A
+    return np.zeros(S + (A,)) / A
+
+
+def zero_weight_cumulative_sum(env):
+    S = tuple([space.n for space in env.observation_space.spaces])
+    A = env.action_space.n
+    return np.zeros(S + (A,)) / A
 
 
 def numerize_state(state):
@@ -26,7 +40,6 @@ def generate_sequence(policy, env):
     state = numerize_state(env.reset())
     indices = np.arange(A)
     while True:
-        # print(state)
         # print(policy[state])
         choice = np.random.choice(indices, p=policy[state])
         next_state, reward, done, info = env.step(choice)
@@ -37,13 +50,13 @@ def generate_sequence(policy, env):
     return sequence
 
 
-def mc_onpolicy_firstvisit(env):
+def mc_onpolicy_firstvisit(env, num_simulations=50000):
     # Initialize Policy and Q
     policy = random_policy(env)
     Q = zero_action_value(env)
     returns = dict()
     # while True:
-    for i in range(100000):
+    for _ in range(num_simulations):
         # Generate sequence given Policy
         sequence = generate_sequence(policy, env)
         # First Visit
@@ -56,27 +69,54 @@ def mc_onpolicy_firstvisit(env):
             # Update Returns and Q based on new return
             returns[key].append(G)
             Q[key] = sum(returns[key]) / float(len(returns[key]))
-            # print(key)
-            # print(returns[key])
-            # print(Q[key])
         # Epsilon-Soft
-        # print('----')
         epsilon = 0.15
         for state, _, _ in sequence:
-            # print("SEQ", len(sequence))
             max_action = np.argmax(Q[tuple(state)])
             num_actions = Q.shape[-1]
             equal_fraction = epsilon / num_actions
             for action in range(num_actions):
                 key = tuple(state) + (action,)
-                # print('-------')
-                # print(key)
-                # print(policy[key])
                 policy[key] = equal_fraction
                 if action == max_action:
-                    # print("ENTRA")
                     policy[key] += 1 - epsilon
-                # print(policy[key])
-                # print('-------')
 
     return policy, Q, returns
+
+
+def mc_offpolicy(env, num_simulations=1000000, gamma=1):
+    # Initialize Policy and values
+    policy = deterministic_policy(env)
+    b = random_policy(env)
+    Q = zero_action_value(env)
+    C = zero_weight_cumulative_sum(env)
+
+    for _ in range(num_simulations):
+        sequence = generate_sequence(b, env)
+        G, W = 0.0, 1.0
+        for state, action, reward in reversed(sequence):
+            #            print(state, action, reward)
+            G += (gamma * G) + reward
+            C[state][action] += W
+            Q[state][action] += (W / C[state][action]) * \
+                (G - Q[state][action])
+            argmax_action = np.argmax(Q[state])
+            policy[state] = 0
+            policy[state][argmax_action] = 1
+            # Early break if non-greedy action taken
+            if action != np.argmax(policy[state]):
+                break
+            W /= b[state][action]
+
+    return policy, Q
+
+
+def print_deterministic_policy(policy, Q):
+    # Usable Ace
+    for dealer in range(1, 11):
+        for hand in range(11, 22):
+            print(policy[hand, dealer, 0])
+            action = 'HIT' if np.argmax(
+                policy[hand, dealer, 0]) == 1 else 'STICK'
+            print(
+                "Dealer Showing: {}, Player Sum: {} --> {}, Q:{}".format(dealer, hand, action, Q[hand, dealer, 0]))
