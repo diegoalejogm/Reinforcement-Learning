@@ -1,14 +1,11 @@
 import numpy as np
+import math
 
 
 def zero_value(env):
-    # S: Tuple of Num. States
-    S = tuple([space.n for space in env.observation_space.spaces])
-    # A: Num. Actions
-    A = env.action_space.n
-    # Size of Value Array: (S0, S1, ... Sn, A)
-    size = S + (A,)
-    return np.zeros(size) / A
+    # Size of Value Array: (nS, nA)
+    size = (env.nS, env.nA)
+    return np.zeros(size)
 
 
 def egreedy_policy(s, Q, epsilon):
@@ -23,13 +20,13 @@ def egreedy_policy(s, Q, epsilon):
     return np.argmax(Q[s])
 
 
-def sarsa(env, alpha, gamma=1, num_episodes=100000):
+def sarsa(env, alpha=0.5, gamma=1, epsilon=.1, num_episodes=200):
+    sum_rewards = []
     # Create Q
     Q = zero_value(env)
     # Run for a given number of times
-    for t in num_episodes:
-        # Calculate epsilon
-        epsilon = 1 / (t + 1)
+    for t in range(num_episodes):
+        sum_rewards.append(0)
         # Obtain initial state
         state = env.reset()
         # Choose action from env given e-greedy policy given Q
@@ -47,29 +44,30 @@ def sarsa(env, alpha, gamma=1, num_episodes=100000):
             # Update state variables
             state = next_state
             action = next_action
+            sum_rewards[t] += reward
             # Finish episode if done==True
             if done:
                 break
-    return Q
+    return Q, sum_rewards
 
 
-def Q_learning(env, alpha, gamma, epsilon=0.1, num_episodes=100000):
+def Q_learning(env, alpha=1, gamma=1, epsilon=0.1, num_episodes=1000):
     # Create Q
     Q = zero_value(env)
     # Run for a given number of times
-    for t in num_episodes:
+    for _ in range(num_episodes):
         # Obtain initial state
         state = env.reset()
-        # Choose action from env given e-greedy policy given Q
-        action = egreedy_policy(state, Q, epsilon)
         # Run each episode
         while True:
+            # Choose action from env given e-greedy policy given Q
+            action = egreedy_policy(state, Q, epsilon)
             # Take action, obtain next state & reward
             next_state, reward, done, _ = env.step(action)
             # Choose next action as max Q(S',a) or equivalently max(Q[s'])
-            next_action = np.max(Q[next_state])
+            next_action = np.argmax(Q[next_state])
             # Approximate Q
-            Q[state][action] += alpha * \
+            Q[state][next_action] += alpha * \
                 (reward + gamma * Q[next_state]
                  [next_action] - Q[state, action])
             # Update state variable
