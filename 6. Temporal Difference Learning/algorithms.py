@@ -21,6 +21,7 @@ def egreedy_policy(s, Q, epsilon):
 
 
 def sarsa(env, alpha=0.5, gamma=1, epsilon=.1, num_episodes=200):
+    # Stats tracking
     sum_rewards = []
     # Create Q
     Q = zero_value(env)
@@ -51,11 +52,14 @@ def sarsa(env, alpha=0.5, gamma=1, epsilon=.1, num_episodes=200):
     return Q, sum_rewards
 
 
-def Q_learning(env, alpha=1, gamma=1, epsilon=0.1, num_episodes=1000):
+def qlearning(env, alpha=0.5, gamma=1, epsilon=0.1, num_episodes=100):
+    # Stats tracking
+    sum_rewards = []
     # Create Q
     Q = zero_value(env)
     # Run for a given number of times
-    for _ in range(num_episodes):
+    for t in range(num_episodes):
+        sum_rewards.append(0)
         # Obtain initial state
         state = env.reset()
         # Run each episode
@@ -67,12 +71,13 @@ def Q_learning(env, alpha=1, gamma=1, epsilon=0.1, num_episodes=1000):
             # Choose next action as max Q(S',a) or equivalently max(Q[s'])
             next_action = np.argmax(Q[next_state])
             # Approximate Q
-            Q[state][next_action] += alpha * \
+            Q[state][action] += alpha * \
                 (reward + gamma * Q[next_state]
-                 [next_action] - Q[state, action])
+                 [next_action] - Q[state][action])
             # Update state variable
             state = next_state
+            sum_rewards[t] += reward
             # Finish episode if done==True
             if done:
                 break
-    return Q
+    return Q, sum_rewards
