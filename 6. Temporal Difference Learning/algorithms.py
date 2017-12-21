@@ -1,14 +1,20 @@
 import numpy as np
-import math
 
 
 def zero_value(env):
+    """
+    Returns a zeroed numpy ndarray with size: (|S|, |A|).
+    """
     # Size of Value Array: (nS, nA)
     size = (env.nS, env.nA)
     return np.zeros(size)
 
 
 def egreedy_policy(s, Q, epsilon):
+    """
+    Given a policy Q and a state s, return an action from Q chosen with e-greedy
+    policy. Such action is chosen greedily with probability 1-epsilon.
+    """
     # Obtain random number in range [0,1)
     random = np.random.rand()
     # If random in epsilon, choose random action
@@ -21,6 +27,31 @@ def egreedy_policy(s, Q, epsilon):
 
 
 def sarsa(env, alpha=0.5, gamma=1, epsilon=.1, num_episodes=200):
+    """
+    Returns the Q-value estimates for an environment by using the SARSA
+    algorithm (State-Action-Reward-State-Action).
+
+    Parameters
+    ----------
+    env : gym.core.Env
+        OpenAI Gym Environment instance
+    alpha : float
+        Algorithm's learning rate
+    gamma : float
+        Discount for next rewards
+    epsilon : float
+        Probability of choosing an action randomly
+    num_episodes : int
+        Number of episodes for the policy iteration process
+
+    Returns
+    -------
+    numpy.ndarray
+        Estimated Q (state-action) values
+    list
+        List of rewards of each episode
+
+    """
     # Stats tracking
     sum_rewards = []
     # Create Q
@@ -53,6 +84,31 @@ def sarsa(env, alpha=0.5, gamma=1, epsilon=.1, num_episodes=200):
 
 
 def qlearning(env, alpha=0.5, gamma=1, epsilon=0.1, num_episodes=100):
+    """
+    Returns the Q-value estimates for an environment by using the Q-Learning
+    algorithm.
+
+    Parameters
+    ----------
+    env : gym.core.Env
+        OpenAI Gym Environment instance
+    alpha : float
+        Algorithm's learning rate
+    gamma : float
+        Discount for next rewards
+    epsilon : float
+        Probability of choosing an action randomly
+    num_episodes : int
+        Number of episodes for the policy iteration process
+
+    Returns
+    -------
+    numpy.ndarray
+        Estimated Q (state-action) values
+    list
+        List of rewards of each episode
+
+    """
     # Stats tracking
     sum_rewards = []
     # Create Q
@@ -84,6 +140,31 @@ def qlearning(env, alpha=0.5, gamma=1, epsilon=0.1, num_episodes=100):
 
 
 def double_qlearning(env, alpha=0.5, gamma=1, epsilon=0.1, num_episodes=100):
+    """
+    Returns the Q-value estimates for an environment by using the Double
+    Q-Learning algorithm.
+
+    Parameters
+    ----------
+    env : gym.core.Env
+        OpenAI Gym Environment instance
+    alpha : float
+        Algorithm's learning rate
+    gamma : float
+        Discount for next rewards
+    epsilon : float
+        Probability of choosing an action randomly
+    num_episodes : int
+        Number of episodes for the policy iteration process
+
+    Returns
+    -------
+    numpy.ndarray
+        Estimated Q (state-action) values
+    list
+        List of rewards of each episode
+
+    """
     # Stats tracking
     sum_rewards = []
     # Create Q1 and Q2
