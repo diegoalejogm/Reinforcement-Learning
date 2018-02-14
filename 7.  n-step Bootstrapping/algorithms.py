@@ -139,8 +139,3 @@ def n_step_sarsa(num_steps, env, num_episodes, policy=None, step_size=.5, discou
                 step += 1
 
     return action_values, episode_rewards
-
-#
-import gym
-env = gym.make('CliffWalking-v0')
-print(n_step_sarsa(1, env, 1, step_size=.5, discount_rate=1., epsilon=.1))
