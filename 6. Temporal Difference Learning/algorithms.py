@@ -1,29 +1,9 @@
+import sys
+sys.path.append("..")
+
 import numpy as np
-
-
-def zero_value(env):
-    """
-    Returns a zeroed numpy ndarray with size: (|S|, |A|).
-    """
-    # Size of Value Array: (nS, nA)
-    size = (env.nS, env.nA)
-    return np.zeros(size)
-
-
-def egreedy_policy(s, Q, epsilon):
-    """
-    Given a policy Q and a state s, return an action from Q chosen with e-greedy
-    policy. Such action is chosen greedily with probability 1-epsilon.
-    """
-    # Obtain random number in range [0,1)
-    random = np.random.rand()
-    # If random in epsilon, choose random action
-    if random < epsilon:
-        num_actions = Q[s].shape[0]
-        indices = np.arange(num_actions)
-        return np.random.choice(indices)
-    # Otherwise return greedy action
-    return np.argmax(Q[s])
+import classes as c
+import utils as u
 
 
 def sarsa(env, alpha=0.5, gamma=1, epsilon=.1, num_episodes=200):
@@ -55,24 +35,24 @@ def sarsa(env, alpha=0.5, gamma=1, epsilon=.1, num_episodes=200):
     # Stats tracking
     sum_rewards = []
     # Create Q
-    Q = zero_value(env)
+    Q = c.ActionValue(u.extract_actions(env))
+    policy = c.EGreedyPolicy(epsilon)
     # Run for a given number of times
     for t in range(num_episodes):
         sum_rewards.append(0)
         # Obtain initial state
         state = env.reset()
         # Choose action from env given e-greedy policy given Q
-        action = egreedy_policy(state, Q, epsilon)
+        action = policy.sample(state, Q)
         # Run each episode
         while True:
             # Take action, obtain next state & reward
             next_state, reward, done, _ = env.step(action)
             # Choose next action
-            next_action = egreedy_policy(next_state, Q, epsilon)
+            next_action = policy.sample(next_state, Q)
             # Approximate Q
-            Q[state][action] += alpha * \
-                (reward + gamma * Q[next_state]
-                 [next_action] - Q[state, action])
+            Q[state,action] += alpha * \
+                (reward + gamma * Q[next_state, next_action] - Q[state, action])
             # Update state variables
             state = next_state
             action = next_action
@@ -112,7 +92,8 @@ def qlearning(env, alpha=0.5, gamma=1, epsilon=0.1, num_episodes=100):
     # Stats tracking
     sum_rewards = []
     # Create Q
-    Q = zero_value(env)
+    Q = c.ActionValue(u.extract_actions(env))
+    policy = c.EGreedyPolicy(epsilon)
     # Run for a given number of times
     for t in range(num_episodes):
         sum_rewards.append(0)
@@ -121,15 +102,13 @@ def qlearning(env, alpha=0.5, gamma=1, epsilon=0.1, num_episodes=100):
         # Run each episode
         while True:
             # Choose action from env given e-greedy policy given Q
-            action = egreedy_policy(state, Q, epsilon)
+            action = policy.sample(state, Q)
             # Take action, obtain next state & reward
             next_state, reward, done, _ = env.step(action)
             # Choose next action as max Q(S',a) or equivalently max(Q[s'])
-            next_action = np.argmax(Q[next_state])
+            next_action = Q.argmax(next_state)
             # Approximate Q
-            Q[state][action] += alpha * \
-                (reward + gamma * Q[next_state]
-                 [next_action] - Q[state][action])
+            Q[state,action] += alpha * (reward + gamma * Q[next_state,next_action] - Q[state,action])
             # Update state variable
             state = next_state
             sum_rewards[t] += reward
@@ -168,8 +147,9 @@ def double_qlearning(env, alpha=0.5, gamma=1, epsilon=0.1, num_episodes=100):
     # Stats tracking
     sum_rewards = []
     # Create Q1 and Q2
-    Q1 = zero_value(env)
-    Q2 = zero_value(env)
+    Q1 = c.ActionValue(u.extract_actions(env))
+    Q2 = c.ActionValue(u.extract_actions(env))
+    policy = c.EGreedyPolicy(epsilon)
     # Run for a given number of times
     for t in range(num_episodes):
         sum_rewards.append(0)
@@ -178,24 +158,22 @@ def double_qlearning(env, alpha=0.5, gamma=1, epsilon=0.1, num_episodes=100):
         # Run each episode
         while True:
             # Choose action from env given e-greedy policy given Q1 and Q2
-            action = egreedy_policy(state, Q1 + Q2, epsilon)
+            action = policy.sample(state, Q1 + Q2)
             # Take action, obtain next state & reward
             next_state, reward, done, _ = env.step(action)
             # Choose policy to update randomly
             if np.random.rand() < .5:
                 # Choose next action as max Q(S',a) or equivalently max(Q[s'])
-                next_action = np.argmax(Q1[next_state])
+                next_action = Q1.argmax(next_state)
                 # Approximate Q
-                Q1[state][action] += alpha * \
-                    (reward + gamma * Q2[next_state]
-                     [next_action] - Q1[state][action])
+                Q1[state, action] += alpha * \
+                    (reward + gamma * Q2[next_state, next_action] - Q1[state, action])
             else:
                 # Choose next action as max Q(S',a) or equivalently max(Q[s'])
-                next_action = np.argmax(Q2[next_state])
+                next_action = Q2.argmax(next_state)
                 # Approximate Q
-                Q2[state][action] += alpha * \
-                    (reward + gamma * Q1[next_state]
-                     [next_action] - Q2[state][action])
+                Q2[state, action] += alpha * \
+                    (reward + gamma * Q1[next_state, next_action] - Q2[state, action])
             # Update state variable
             state = next_state
             sum_rewards[t] += reward
