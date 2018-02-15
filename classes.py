@@ -98,16 +98,40 @@ class ActionValue:
 #---- Policies
 class EGreedyPolicy:
 
-    def __init__(self, epsilon):
+    def __init__(self, epsilon, action_values):
         self.epsilon = epsilon
+        self.action_values = action_values
 
-    def sample(self, state, action_values):
+
+    def __getitem__(self, item):
+        # Raise error less or more than two keys were passed.
+        if len(item) != 2:
+            raise ValueError('Expected two keys')
+
+        # Get item
+        state, action = item
+        return self.probability(state, action)
+
+    def probability(self, state, action):
+        # Num actions
+        n_actions = len(self.action_values.actions)
+        # Get argmax item
+        argmax = self.action_values.argmax(state)
+        # Calculate probabilty
+        probability = self.epsilon / float(n_actions)
+        if action != argmax:
+            probability += 1.-self.epsilon
+        return probability
+
+
+    def sample(self, state):
         # Obtain random number in range [0,1)
         random = np.random.rand()
         # If random in epsilon, choose random action
         if random < self.epsilon:
-            rand_index = np.random.randint(0, len(action_values.actions))
-            return action_values.actions[rand_index]
+            rand_index = np.random.randint(0, len(self.action_values.actions))
+            return self.action_values.actions[rand_index]
 
         # Otherwise return greedy action
-        return action_values.argmax(state)
+        return self.action_values.argmax(state)
+

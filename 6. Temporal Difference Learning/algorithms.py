@@ -36,20 +36,20 @@ def sarsa(env, alpha=0.5, gamma=1, epsilon=.1, num_episodes=200):
     sum_rewards = []
     # Create Q
     Q = c.ActionValue(u.extract_actions(env))
-    policy = c.EGreedyPolicy(epsilon)
+    policy = c.EGreedyPolicy(epsilon, Q)
     # Run for a given number of times
     for t in range(num_episodes):
         sum_rewards.append(0)
         # Obtain initial state
         state = env.reset()
         # Choose action from env given e-greedy policy given Q
-        action = policy.sample(state, Q)
+        action = policy.sample(state)
         # Run each episode
         while True:
             # Take action, obtain next state & reward
             next_state, reward, done, _ = env.step(action)
             # Choose next action
-            next_action = policy.sample(next_state, Q)
+            next_action = policy.sample(next_state)
             # Approximate Q
             Q[state,action] += alpha * \
                 (reward + gamma * Q[next_state, next_action] - Q[state, action])
@@ -93,7 +93,7 @@ def qlearning(env, alpha=0.5, gamma=1, epsilon=0.1, num_episodes=100):
     sum_rewards = []
     # Create Q
     Q = c.ActionValue(u.extract_actions(env))
-    policy = c.EGreedyPolicy(epsilon)
+    policy = c.EGreedyPolicy(epsilon, Q)
     # Run for a given number of times
     for t in range(num_episodes):
         sum_rewards.append(0)
@@ -102,7 +102,7 @@ def qlearning(env, alpha=0.5, gamma=1, epsilon=0.1, num_episodes=100):
         # Run each episode
         while True:
             # Choose action from env given e-greedy policy given Q
-            action = policy.sample(state, Q)
+            action = policy.sample(state)
             # Take action, obtain next state & reward
             next_state, reward, done, _ = env.step(action)
             # Choose next action as max Q(S',a) or equivalently max(Q[s'])
@@ -149,7 +149,6 @@ def double_qlearning(env, alpha=0.5, gamma=1, epsilon=0.1, num_episodes=100):
     # Create Q1 and Q2
     Q1 = c.ActionValue(u.extract_actions(env))
     Q2 = c.ActionValue(u.extract_actions(env))
-    policy = c.EGreedyPolicy(epsilon)
     # Run for a given number of times
     for t in range(num_episodes):
         sum_rewards.append(0)
@@ -158,7 +157,8 @@ def double_qlearning(env, alpha=0.5, gamma=1, epsilon=0.1, num_episodes=100):
         # Run each episode
         while True:
             # Choose action from env given e-greedy policy given Q1 and Q2
-            action = policy.sample(state, Q1 + Q2)
+            policy = c.EGreedyPolicy(epsilon, Q1 + Q2)
+            action = policy.sample(state)
             # Take action, obtain next state & reward
             next_state, reward, done, _ = env.step(action)
             # Choose policy to update randomly

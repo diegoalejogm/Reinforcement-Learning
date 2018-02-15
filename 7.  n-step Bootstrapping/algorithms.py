@@ -15,7 +15,7 @@ def n_step_sarsa(num_steps, env, num_episodes, policy=None, step_size=.5, discou
     action_values = c.ActionValue(u.extract_actions(env))
     # Init PI to be e-greedy w.r.t. Q, or to a fixed given policy
     if policy is None:
-        policy = c.EGreedyPolicy(epsilon)
+        policy = c.EGreedyPolicy(epsilon, action_values)
 
     # Store and access operation lists
     states  = c.NstepMemory(num_steps)
@@ -26,7 +26,7 @@ def n_step_sarsa(num_steps, env, num_episodes, policy=None, step_size=.5, discou
         # Init and store S0
         states[0], rewards[0] = env.reset(), 0
         # Select and store action A0
-        actions[0] = policy.sample(states[0], action_values)
+        actions[0] = policy.sample(states[0])
         # T: terminal_step = infinity
         step, terminal_step = 0, float('inf')
 
@@ -40,7 +40,7 @@ def n_step_sarsa(num_steps, env, num_episodes, policy=None, step_size=.5, discou
                 if done:
                     terminal_step = step + 1
                 else:
-                    actions[step+1] = policy.sample(states[step+1], action_values)
+                    actions[step+1] = policy.sample(states[step+1])
 
             update_step = step - num_steps + 1
 
