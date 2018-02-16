@@ -8,7 +8,36 @@ import utils as u
 
 
 def n_step_sarsa(num_steps, env, num_episodes, policy=None, step_size=.5, discount_rate=.9, epsilon=.3):
+    """
+    Returns the Q-value estimates for an environment by using the On-Policy N-Step SARSA algorithm
 
+    Parameters
+    ----------
+    num_steps: int
+        Number of steps used in value function bootstrapping
+    env : gym.core.Env
+        OpenAI Gym Environment instance
+    num_episodes : int
+        Number of episodes to be run using the environment
+    policy : Policy instance
+        Optional Behaviour Policy for which the Q-values will be estimated
+        If None, an e-greedy policy will be used, based on the estimated Q-Values
+    step_size: float
+        Algorithm's learning rate
+    discount_rate : float
+        Discount rate used when estimating values with future rewards
+    epsilon : float
+        Probability of choosing an action randomly in e-greedy policy created if
+        None 'policy' parameter is used
+
+    Returns
+    -------
+    ActionValue
+        Estimated Q (state-action) values
+    list
+        List of rewards of each episode
+
+    """
     episode_rewards = []
 
     # Init Q(s,a) arbitrarily, for all s in S, a in A(s)
@@ -64,7 +93,36 @@ def n_step_sarsa(num_steps, env, num_episodes, policy=None, step_size=.5, discou
 
 
 def n_step_backup_tree(num_steps, env, num_episodes, policy=None, step_size=.5, discount_rate=.9, epsilon=.3):
+    """
+    Returns the Q-value estimates for an environment by using the Off-Policy N-Step Backup Tree Algorithm
 
+    Parameters
+    ----------
+    num_steps: int
+        Number of steps used in value function bootstrapping
+    env : gym.core.Env
+        OpenAI Gym Environment instance
+    num_episodes : int
+        Number of episodes to be run using the environment
+    policy : Policy instance
+        Optional Target Policy for which the Q-values will be estimated
+        If None, an e-greedy policy will be used, based on the estimated Q-Values
+    step_size: float
+        Algorithm's learning rate
+    discount_rate : float
+        Discount rate used when estimating values with future rewards
+    epsilon : float
+        Probability of choosing an action randomly in e-greedy policy created if
+        None 'policy' parameter is used
+
+    Returns
+    -------
+    ActionValue
+        Estimated Q (state-action) values
+    list
+        List of rewards of each episode
+
+    """
     episode_rewards = []
 
     # Init Q(s,a) arbitrarily, for all s in S, a in A(s)
@@ -135,6 +193,38 @@ def n_step_backup_tree(num_steps, env, num_episodes, policy=None, step_size=.5, 
 
 
 def n_step_sarsa_importance_sampling(behaviour_policy, num_steps, env, num_episodes, policy=None, step_size=.5, discount_rate=.9, epsilon=.3):
+    """
+    Returns the Q-value estimates for an environment by using the Off-Policy N-Step SARSA algorithm
+
+    Parameters
+    ----------
+    behaviour_policy : Policy instance
+        Behaviour Policy for which the Q-values will be estimated
+    num_steps: int
+        Number of steps used in value function bootstrapping
+    env : gym.core.Env
+        OpenAI Gym Environment instance
+    num_episodes : int
+        Number of episodes to be run using the environment
+    policy : Policy instance
+        Optional Target Policy for which the Q-values will be estimated
+        If None, an e-greedy policy will be used, based on the estimated Q-Values
+    step_size: float
+        Algorithm's learning rate
+    discount_rate : float
+        Discount rate used when estimating values with future rewards
+    epsilon : float
+        Probability of choosing an action randomly in e-greedy policy created if
+        None 'policy' parameter is used
+
+    Returns
+    -------
+    ActionValue
+        Estimated Q (state-action) values
+    list
+        List of rewards of each episode
+
+    """
 
     episode_rewards = []
 
