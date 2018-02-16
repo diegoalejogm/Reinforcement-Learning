@@ -1,5 +1,5 @@
 from IPython.display import clear_output as co
-
+import time
 
 def extract_actions(env):
     return list(range(env.nA))
@@ -10,13 +10,16 @@ def extract_actions(env):
 def run_environment_greedy(env, Q):
     state = env.reset()
     while(True):
-        clear_output()
+        co()
         print('Current State: {}'.format(state))
         action = Q.argmax(state)
         env.render()
         print('Greedy action: {}'.format(action))
         state, reward, done, _ = env.step(action)
-        raw_input("Press Enter to continue...")
+        try:
+            input("Press Enter to continue...")
+        except Exception as e:
+            raw_input("Press Enter to continue...")
         if done:
             break
     clear_output()
