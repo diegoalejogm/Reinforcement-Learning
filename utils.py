@@ -1,4 +1,4 @@
-from IPython.display import clear_output
+from IPython.display import clear_output as co
 
 
 def extract_actions(env):
@@ -22,4 +22,11 @@ def run_environment_greedy(env, Q):
     clear_output()
     print('Current State: {}'.format(state))
     env.render()
-    print('Finished')
+    print('Finished!')
+
+def display_episode_log(episode, num_episodes):
+    clear_output()
+    print('Episode: {}/{}'.format(episode, num_episodes))
+
+def clear_output():
+    co(wait=True)
