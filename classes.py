@@ -60,15 +60,20 @@ class ActionValue:
         clone = copy.deepcopy(self)
         # Merge unique actions and replace
         clone.actions = list(set(clone.actions + other.actions))
+        clone += other
+        return clone
+
+    def __iadd__(self, other):
+
         # For every key in the other action_value
         for k in other.dict:
             # Sum if key also exists in cloned
-            if k in clone.dict:
-                clone.dict[k] += other.dict[k]
+            if k in self.dict:
+                self.dict[k] += other.dict[k]
             # Set otherwise as new value for key
             else:
-                clone.dict[k] = other.dict[k]
-        return clone
+                self.dict[k] = other.dict[k]
+        return self
 
     def __truediv__(self, other):
         # Create a copy to return
@@ -116,10 +121,13 @@ class EGreedyPolicy:
         # Num actions
         n_actions = len(self.action_values.actions)
         # Get argmax item
+
         argmax = self.action_values.argmax(state)
+        if argmax == None:
+            raise ValueError("Could't find greedy action: action values returned None.")
         # Calculate probabilty
         probability = self.epsilon / float(n_actions)
-        if action != argmax:
+        if action == argmax:
             probability += 1.-self.epsilon
         return probability
 
