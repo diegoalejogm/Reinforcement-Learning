@@ -49,7 +49,6 @@ This section is for myself, but feel free to **fork the repo** and add your cont
 
 - [ ] Add License.
 - [ ] Add Tests to Data Structures and Models.
-- [ ] *\(Optionally)* Add Tests to algorithms.
 
 ## License
 MIT
