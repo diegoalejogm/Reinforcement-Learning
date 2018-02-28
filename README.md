@@ -15,13 +15,13 @@ Additionally, in all chapter-directories, a `notebooks` sub-folder is present. S
 
 The following Python files, found in the home directory, are the most relevant for this project:
 
-```classes.py``` 
+[```classes.py```](https://github.com/diegoalejogm/Reinforcement-Learning/blob/master/classes.py)
 Contains the implementation of common models used in Reinforcement Learning tasks. An example of this are Policy classes (e.g. e-greedy), Action Value Functions, and relevant data structures (e.g. N-Step Memory).
 
-```utils.py```
+[```utils.py```](https://github.com/diegoalejogm/Reinforcement-Learning/blob/master/utils.py)
 Contains auxiliary methods such as printing and displaying environment interaction logs, which are used by other modules.
 
-```visualize.py```
+[```visualize.py```](https://github.com/diegoalejogm/Reinforcement-Learning/blob/master/visualize.py)
 Contains methods that enable the visualization of statistics calculated from the experience of agents that have ran in environments.
 
 ## Install
